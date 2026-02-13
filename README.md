@@ -10,12 +10,13 @@ Este proyecto tiene como objetivo centralizar las fuentes de datos de la organiz
 
 ## 🛠️ Solución
 1. **Workspace central (“Datos Corporativos”)**  
-   - Creación de un espacio único para gestionar dataflows y datasets.Se administran las versiones subiendo
+   - Creación de un espacio único para gestionar dataflows y datasets.Se administran las versiones con Git o minimamente sharepoint y un flujo de aprobación donde los cambios queden documentados adecuadamente.
 
 2. **Dataflows corporativos**  
    - Extracción y transformación de datos desde las fuentes.  
    - Limpieza, tipificación y estandarización de tablas.  
-
+Aqui utilizaría parametros e incremental refresh para optimizar los tiempos de refresco.
+Tambien es posible recurrir a un desarrollo de script en SQL en Oracle directamente para el desarrollo de una vista determinada en el caso de que el tamaño de los datos sea muy grande.
 3. **Dataset maestro**  
    - Modelo estrella con tablas de hechos (Ventas) y dimensiones (Clientes, Productos, Provincias, objetivos).  
    - Definición de medidas corporativas en DAX (ej. Ventas, Margen).  
@@ -30,13 +31,38 @@ Origenes de datos
 4. **Gobernanza y seguridad**  
    - Permisos **Build** otorgados a cada área para crear informes basados en el dataset. Se da acceso al area de trabajo (miembro) y luego "build" a nivel de dataset.
    - Roles de seguridad a nivel fila (RLS) para restringir acceso según provincia. Esto se configura en el Power Bi desktop pero luego se termina de configurar en el Power BI service. Para automatizarlo y facilitar el ABM de usuarios, conviene utilizar el username() o userprincipalname() y/o grupos de seguridad que tienen un campo relacionado con la ubicación.
-   - Documentación de KPIs y diccionario de datos.  
+Las excepciones se deben manejar en cada caso otorgando permisos a nivel de informe.
 
+En cuanto a los usuarios de los informes, se recomienda el uso de apps que integren los informes necesarios donde se definan las audiencias que podrán ver uno o más informes en forma de solo lectura totalmente segura.
+
+Los pasos serian:
+1-creacion de workspace central administada por personal bi.
+2-creacion de los dataflows conectandose a los origenes de datos en la forma mas limpia posible usando scripts en sql o python.
+3-creacion de un dataset conectado al dataflow en el power bi desktop y se publica en el servicio en el workspace central.Se terminan de limpiar los datos,se crean las metricas adecuadas y se determinan las relaciones.Documentación de KPIs y diccionario de datos.  
+4-se asignan los permisos adecuados en el workspace central y en el dataset (build).
+5-cada area crea o solicita la creacion de su propia area de trabajo con los permisos adecuados. 
+6-en Power BI desktop se crean un informe conectado al dataset principal en modo "live connection".Se crean las visuales necesarias para el analisis y la toma de decisiones.  Se crean los roles por provincia.
+7-Se publica el informe de cada area en su respectiva area de trabajo.
+8- una vez publicado en el servicio, se termina de configurar el RLS con usuarios definidos o grupos de usuario de Azure para que sólo vean los datos relativos de cada provincia.
+9- Se crea la app para los usuarios finales definiendo audiencias y qué informes ve cada una dentro de cada área de trabajo.
+   
 5. **Consumo por áreas**  
-   - Cada área se conecta al dataset maestro en modo *live connection*.  
+   - Cada área se conecta al dataset maestro en modo *live connection*. La desventaja es que no se pueden hacer metricas a medida de cada area pero asegura que la calidad de los datos y que todos muestran "lo mismo".  
    - Crean informes en sus propios workspaces, garantizando consistencia en métricas.  
 
 ## 🔒 Gobernanza y versionado
+-Uso de Power BI lineage view para visualizar dependencias entre datasets, informes y dashboards.
+-Integración con un catálogo de datos (ej. Azure Purview, Collibra) para centralizar metadatos.
+-Definición de estándares de nomenclatura y plantillas de documentación para asegurar consistencia.
+-Automatización de metadatos mediante API de Power BI para mantener la documentación actualizada.
+
+Se documentan:
+-Fuentes de datos: origen, tipo de conexión, frecuencia de actualización.
+-Transformaciones aplicadas: pasos en Power Query, cálculos en DAX.
+-Definiciones de métricas: significado de KPIs y reglas de negocio.
+-Responsables: contacto de soporte por dataset o informe.
+-Dependencias: relación entre datasets compartidos e informes.
+
 - **Roles definidos**:  
   - Equipo de BI administra dataset maestro.  
   - Áreas de negocio gestionan sus informes.  
