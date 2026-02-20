@@ -37,7 +37,7 @@ En cuanto a los usuarios de los informes, se recomienda el uso de apps que integ
 
 Los pasos serian:
 1-creacion de workspace central administada por personal bi.
-2-creacion de los dataflows conectandose a los origenes de datos en la forma mas limpia posible usando scripts en sql o python.
+2-creacion de los dataflows conectandose a los origenes de datos en la forma mas limpia posible usando scripts en sql.
 3-creacion de un dataset conectado al dataflow en el power bi desktop y se publica en el servicio en el workspace central.Se terminan de limpiar los datos,se crean las metricas adecuadas y se determinan las relaciones.Documentación de KPIs y diccionario de datos.  
 4-se asignan los permisos adecuados en el workspace central y en el dataset (build).
 5-cada area crea o solicita la creacion de su propia area de trabajo con los permisos adecuados. 
@@ -55,7 +55,7 @@ Los pasos serian:
 -Integración con un catálogo de datos (ej. Azure Purview, Collibra) para centralizar metadatos.
 -Definición de estándares de nomenclatura y plantillas de documentación para asegurar consistencia.
 -Automatización de metadatos mediante API de Power BI para mantener la documentación actualizada.
-
+Se crea una vista de calidad de dato usando un script de python simple en este caso.
 Se documentan:
 -Fuentes de datos: origen, tipo de conexión, frecuencia de actualización.
 -Transformaciones aplicadas: pasos en Power Query, cálculos en DAX.
@@ -81,4 +81,6 @@ Se documentan:
 - La documentación de KPIs evita interpretaciones distintas entre áreas.  
 
 
+Se utiliza la IA para el armado de este readme en secciones y para el armado del script de Python que se obtuvo de un informe anterior.
 
+A disposición.
